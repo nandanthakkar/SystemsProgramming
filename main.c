@@ -8,6 +8,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <dirent.h>
+#include <fcntl.h>
+#include <errno.h>
 #include "printToXML.h"
 
 //will resize as the hashtable resizes
@@ -18,6 +22,8 @@ static Node* keyset_root;
 
 FILE * fp;
 
+DIR * pDir;
+struct dirent *pDirent;
 void printTokenData(){
     Node * temp = keyset_root;
     HashNode * ptr;
@@ -54,9 +60,86 @@ HashNode * getHashNode(char * tok){
     
 }
 
+int getFileDescriptor(char * path){
+    
+    int fd = open(path, O_RDONLY);
+    
+    if(fd == -1){
+        printf("Could not open file '%s'\n",path);
+    }
+    
+    return fd;
+}
+
+// I have left print statement because one can understand the code when they run it.
+void scrollDir(char * path){
+    int isDir = 1;
+    DIR * pDir;
+    struct dirent *pDirent;
+    pDir = opendir (path);
+    if (pDir == NULL) {
+        printf ("Cannot open directory '%s'\n", path);
+        isDir = 0;
+        int fd = getFileDescriptor(path);
+        
+        if(fd > -1){
+            //tokenize(fd); // use this file discriptor to tokenize.
+            printf("fdddd: %d\n",fd);
+        }
+    }
+    else{
+    
+    if(isDir == 1){
+        while ((pDirent = readdir(pDir)) != NULL) {
+            printf ("%s\n%d\n%s\n%lu\n", pDirent->d_name, pDirent->d_namlen, path ,strlen(path));
+            if(strcmp(pDirent->d_name,"..") == 0 || strcmp(pDirent->d_name,".") == 0){
+                continue;
+            }
+            int i;
+            if(path[strlen(path)-1] == '/'){
+                i =1;
+            }
+            else{
+                i =2;
+            }
+            char * subpath = malloc(strlen(path)+pDirent->d_namlen +i);
+            if(i == 1){
+                subpath =  strcpy(subpath,  path);
+                subpath =  strcat(subpath, pDirent->d_name);
+                
+            }
+            else{
+                subpath = strcpy(subpath, path);
+                subpath[strlen(path)] = '/';
+                subpath[strlen(path)+1] = '\0';
+                subpath = strcat(subpath, pDirent->d_name);
+            }
+            printf("%s\n",subpath);
+            scrollDir(subpath);
+        }
+    }
+    
+    
+    closedir (pDir);
+    }
+    
+    
+}
+
 //just for testing
 int main(int argc, const char * argv[]) {
     // insert code here...
+    
+    
+    
+    //DIR *pDir;
+    
+    /*if (argc < 2) {
+        printf ("Usage: testprog <dirname>\n");
+        return 1;
+    }*/
+    scrollDir((char *)argv[1]);
+    
     keyset_root = (Node *) malloc(sizeof(Node));
     char * str = (char *)malloc(7);
     str = "Nandan";
