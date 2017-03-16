@@ -2,7 +2,7 @@
 //  printToXML.h
 //  RecursiveIndexing
 //
-//  Created by Jolly Thakkar on 3/16/17.
+//  Created by Nandan Thakkar on 3/16/17.
 //  Copyright © 2017 Nandan Thakkar. All rights reserved.
 //
 
@@ -38,4 +38,12 @@ void exortToXML();
 // pass key as parameter. key will be used to map its value. Value will be returned.
 HashNode * getHashNode(char * key);
 
+// get file discriptor if path leads to file.
+int getFileDescriptor(char * path);
+
+// scroll file or directory
+void scrollDir(char * path);
+
+// parameter is file descriptor and use that fd to tokenize strings from file.
+void tokenize(int );
 #endif /* printToXML_h */
