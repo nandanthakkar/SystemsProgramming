@@ -6,7 +6,7 @@
 #include <errno.h>
 #include <string.h>
 
-int SD = NULL;
+struct sockaddr_in SD = NULL;
 int sizeofSD = 0;
 char* HOST_NAME = NULL;
 enum error_msgs{
