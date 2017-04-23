@@ -7,6 +7,7 @@
 #include <string.h>
 
 int SD = NULL;
+int sizeofSD = 0;
 char* HOST_NAME = NULL;
 enum error_msgs{
 	HOST_NOT_FOUND = -1
@@ -68,12 +69,13 @@ int netserverinit(char * hostname){
    
    //if we get here, set the socket file descriptor & store the host name as a global variable  
    //HOST_NAME is to be used in functions like netread and netwrite
-   SD = malloc(struct sockaddr_in*) malloc(sizeof(struct sockaddr_in));
-   bzero(char*)&serv_addr,, sizeof(serv_addr));
+   SD = (struct sockaddr_in*) malloc(sizeof(struct sockaddr_in));
+   SD->in_addr = (struct in_addr*)malloc(sizeof(struct in_addr));
+   bzero((char*)&SD, sizeof(struct sockaddr_in));
    SD->sin_family = AF_INET;
    bcopy((char*)server->h_addr, (char*) &SD->sin_addr->s_addr, server->h_length);
-   serv_addr->sin_port = htons(portno);
- 
+   SD->sin_port = htons(portno);
+	
    
    //copy the host name sent from the command line 
    HOST_NAME = (char*)malloc(sizeof(char)*strlen(hostname)+1);
@@ -81,11 +83,3 @@ int netserverinit(char * hostname){
    
    return 0;
 }
-
-
-
-
-
-
-
-
